@@ -139,6 +139,8 @@ impl Serialize for March7thRelic {
         root.serialize_entry("equip", &self.equip)?;
         // let random_id = thread_rng().gen::<u64>();
         // root.serialize_entry("id", &random_id);
+        root.serialize_entry("locked", &self.locked);
+        root.serialize_entry("token", &self.token);
 
         root.end()
     }

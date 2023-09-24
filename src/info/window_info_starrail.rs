@@ -43,6 +43,9 @@ pub struct WindowInfoStarRail {
     pub star_y: f64,
 
     pub pool_pos: Rect,
+
+    pub lock_x: f64,
+    pub lock_y: f64,
 }
 
 impl WindowInfoStarRail {
@@ -98,6 +101,8 @@ impl WindowInfoStarRail {
             star_x: convert_x(self.star_x) as u32,
             star_y: convert_y(self.star_y) as u32,
             pool_position: convert_rect(&self.pool_pos),
+            lock_x: convert_x(self.lock_x) as u32,
+            lock_y: convert_y(self.lock_y) as u32,
         }
     }
 }
@@ -143,6 +148,9 @@ pub const WINDOW_43_18: WindowInfoStarRail = WindowInfoStarRail {
     star_y: 200.0,
 
     pool_pos: Rect(170.0, 2610.0 + 30.0, 900.0, 2610.0),
+
+    lock_x: 3123.0,
+    lock_y: 579.0,
 };
 
 pub const WINDOW_7_3: WindowInfoStarRail = WindowInfoStarRail {
@@ -185,6 +193,10 @@ pub const WINDOW_7_3: WindowInfoStarRail = WindowInfoStarRail {
     star_x: 1900.0,
     star_y: 123.9,
     pool_pos: Rect(118.2, 1584.0 + 15.0, 510.3, 1584.0),
+
+    // I DON'T KNOW LOCATION WITHOUT 3440x1440 MONITOR
+    lock_x: 2333.0,
+    lock_y: 2333.0,
 };
 
 pub const WINDOW_16_9: WindowInfoStarRail = WindowInfoStarRail {
@@ -227,6 +239,9 @@ pub const WINDOW_16_9: WindowInfoStarRail = WindowInfoStarRail {
     star_y: 208.0,
 
     pool_pos: Rect(118.2, 1218.7 + 15.0, 510.3, 1218.7),
+
+    lock_x: 1514.0,
+    lock_y: 274.0,
 };
 
 
@@ -262,6 +277,9 @@ pub const WINDOW_8_5: WindowInfoStarRail = WindowInfoStarRail {
     star_x: 1321.3,
     star_y: 111.3,
     pool_pos: Rect(103.6, 1025.8 + 15.0, 460.7, 1028.5),
+    // NOT EXACT
+    lock_x: 1306.28,
+    lock_y: 322.28,
 };
 
 
@@ -297,6 +315,9 @@ pub const WINDOW_4_3: WindowInfoStarRail = WindowInfoStarRail {
     star_x: 1175.4,
     star_y: 95.8,
     pool_pos: Rect(93.2, 912.7 + 15.0, 412.4, 912.7),
+    // NOT EXACT
+    lock_x: 1164.0,
+    lock_y: 296.0,
 };
 
 
@@ -332,4 +353,7 @@ pub const WINDOW_MAC_8_5: WindowInfoStarRail = WindowInfoStarRail {
     star_x: 1060.,
     star_y: 140. - 28.,
     pool_pos: Rect(390. - 28., 1010., 504. - 28., 792.), //检测平均颜色是否相同，判断圣遗物有没有切换
+    // NOT EXACT
+    lock_x: 1164.0,
+    lock_y: 296.0,
 };

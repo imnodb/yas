@@ -1,7 +1,10 @@
+use std::collections::HashMap;
+use std::fs;
 use std::io::stdin;
 use std::path::Path;
 use std::time::SystemTime;
 
+use yas_scanner::artifact::internal_relic::Lock;
 #[cfg(target_os = "macos")]
 use yas_scanner::common::utils::get_pid_and_ui;
 use yas_scanner::common::{utils, UI};
@@ -135,6 +138,31 @@ fn main() {
         .get_matches();
     let config = YasScannerConfig::from_match(&matches);
 
+    let output_dir = Path::new(matches.value_of("output-dir").unwrap());
+    let lock_filename = output_dir.join("lock.json");
+    // dbg!(&lock_filename);
+    let mut lock_map: HashMap<String, Lock> = HashMap::new();
+
+    if lock_filename.exists() {
+        let json_str = fs::read_to_string(lock_filename);
+        match json_str {
+            Ok(v) => {
+                let json: Vec<Lock> = serde_json::from_str(v.as_str()).unwrap();
+                // dbg!(&json);
+                for a in json.into_iter() {
+                    // dbg!(&a);
+                    lock_map.insert(a.token.clone(), a);
+                }
+            },
+            Err(e) => (),
+        }
+    }
+    if lock_map.is_empty() {
+        warn!("根据分数加锁！\n");
+    } else {
+        warn!("检测到lock文件，开始加解锁：");
+    }
+
     let rect: PixelRect;
     let is_cloud: bool;
     let ui: UI;
@@ -266,7 +294,7 @@ fn main() {
     info.left += offset_x;
     info.top += offset_y;
 
-    let mut scanner = YasScanner::new(info.clone(), config, is_cloud);
+    let mut scanner = YasScanner::new(info.clone(), config, is_cloud, lock_map);
 
     let now = SystemTime::now();
     #[cfg(target_os = "macos")]

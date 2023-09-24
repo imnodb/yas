@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::convert::From;
 use std::fs;
 
@@ -12,9 +12,7 @@ use image::{GenericImageView, RgbImage};
 use log::{error, info, warn};
 use tract_onnx::prelude::tract_itertools::Itertools;
 
-use crate::artifact::internal_relic::{
-    RelicSetName, RelicSlot, RelicStat, InternalRelic,
-};
+use crate::artifact::internal_relic::{InternalRelic, Lock, RelicSetName, RelicSlot, RelicStat};
 use crate::capture::{self};
 use crate::common::character_name::CHARACTER_NAMES;
 use crate::common::color::Color;
@@ -113,6 +111,8 @@ pub struct YasScanner {
     scanned_count: u32,
 
     is_cloud: bool,
+
+    lock_map: HashMap<String, Lock>,
 }
 
 enum ScrollResult {
@@ -138,7 +138,7 @@ pub struct YasScanResult {
 }
 
 impl YasScanResult {
-    pub fn to_internal_relic(&self) -> Option<InternalRelic> {
+    pub fn to_internal_relic(&self, lock_map: HashMap<String, Lock>) -> Option<InternalRelic> {
         let set_name = RelicSetName::from_zh_cn(&self.name)?;
         let slot = RelicSlot::from_zh_cn(&self.name)?;
         let star = self.star;
@@ -161,7 +161,7 @@ impl YasScanResult {
         let sub4 = RelicStat::from_zh_cn_raw(&self.sub_stat_4);
 
         let equip = None;
-/*         let equip = if self.equip.contains("已装备") {
+        /*         let equip = if self.equip.contains("已装备") {
             //let equip_name = self.equip.clone();
             //equip_name.remove_matches("已装备");
             //let equip_name = &self.equip[..self.equip.len()-9];
@@ -177,7 +177,7 @@ impl YasScanResult {
             None
         }; */
 
-        let relic = InternalRelic {
+        let mut relic = InternalRelic {
             set_name,
             slot,
             star,
@@ -188,7 +188,10 @@ impl YasScanResult {
             sub_stat_3: sub3,
             sub_stat_4: sub4,
             equip,
+            locked: false,
+            token: String::new(),
         };
+        let _ = &relic.g_token(lock_map);
         Some(relic)
     }
 }
@@ -205,7 +208,12 @@ fn calc_pool(row: &Vec<u8>) -> f32 {
 }
 
 impl YasScanner {
-    pub fn new(info: ScanInfoStarRail, config: YasScannerConfig, is_cloud: bool) -> YasScanner {
+    pub fn new(
+        info: ScanInfoStarRail,
+        config: YasScannerConfig,
+        is_cloud: bool,
+        lock_map: HashMap<String, Lock>,
+    ) -> YasScanner {
         let row = info.art_row;
         let col = info.art_col;
 
@@ -230,6 +238,7 @@ impl YasScanner {
             scanned_count: 0,
 
             is_cloud,
+            lock_map,
         }
     }
 }
@@ -239,7 +248,7 @@ impl YasScanner {
         #[cfg(target_os = "macos")]
         let (_, ui) = get_pid_and_ui();
         let mut count = 0;
-        while count < 10 {
+        while count < 3 {
             let color = self.get_flag_color();
             if color.is_same(&self.initial_color) {
                 return true;
@@ -333,7 +342,7 @@ impl YasScanner {
                     Ok(v) => v,
                     Err(_) => {
                         return Err(String::from("无法识别遗器数量"));
-                    }
+                    },
                 };
                 return Ok(count);
             }
@@ -379,6 +388,22 @@ impl YasScanner {
         }
 
         star
+    }
+
+    fn get_lock(&self) -> u32 {
+        let color = capture::get_color(
+            (self.info.lock_x as i32 + self.info.left) as u32,
+            (self.info.lock_y as i32 + self.info.top) as u32,
+        );
+        let color_locked = Color::from(18, 18, 18);
+        let color_unlocked = Color::from(245, 245, 245);
+        // println!("color: {:?}", color);
+
+        if color_locked.dis_2(&color) < color_unlocked.dis_2(&color) {
+            return 1 as u32;
+        } else {
+            return 0 as u32;
+        }
     }
 
     pub fn move_to(&mut self, row: u32, col: u32) {
@@ -607,12 +632,14 @@ impl YasScanner {
         info!("total row: {}", total_row);
         info!("last column: {}", last_row_col);
 
-        let (tx, rx) = mpsc::channel::<Option<(RgbImage, u32)>>();
+        let (tx, rx) = mpsc::channel::<Option<(RgbImage, u32, u32)>>();
+        let (tx2, rx2) = mpsc::sync_channel::<u32>(1);
         let info_2 = self.info.clone();
         // v bvvmnvbm
         let is_verbose = self.config.verbose;
         let is_dump_mode = self.config.dump_mode;
         let min_level = self.config.min_level;
+        let lock_map = self.lock_map.clone();
         let handle = thread::spawn(move || {
             let mut results: Vec<InternalRelic> = Vec::new();
             let model = CRNNModel::new(
@@ -638,13 +665,13 @@ impl YasScanner {
             };
 
             for i in rx {
-                let (capture, star) = match i {
+                let (capture, star, curr_locked) = match i {
                     Some(v) => v,
                     None => break,
                 };
                 //info!("raw capture image: width = {}, height = {}", capture.width(), capture.height());
                 let _now = SystemTime::now();
-
+                let mut lock_op = 0_u32;
                 let model_inference = |pos: &PixelRectBound,
                                        name: &str,
                                        captured_img: &RgbImage,
@@ -704,22 +731,22 @@ impl YasScanner {
                     cnt,
                 );
 
-                let str_sub_stat_1_name = model_inference(
-                    &info.sub_stat1_name_pos, "sub_stat_1_name", &capture, cnt);
-                let str_sub_stat_1_value = model_inference(
-                    &info.sub_stat1_value_pos, "sub_stat_1_value", &capture, cnt);
-                let str_sub_stat_2_name = model_inference(
-                    &info.sub_stat2_name_pos, "sub_stat_2_name", &capture, cnt);
-                let str_sub_stat_2_value = model_inference(
-                    &info.sub_stat2_value_pos, "sub_stat_2_value", &capture, cnt);
-                let str_sub_stat_3_name = model_inference(
-                    &info.sub_stat3_name_pos, "sub_stat_3_name", &capture, cnt);
-                let str_sub_stat_3_value = model_inference(
-                    &info.sub_stat3_value_pos, "sub_stat_3_value", &capture, cnt);
-                let str_sub_stat_4_name = model_inference(
-                    &info.sub_stat4_name_pos, "sub_stat_4_name", &capture, cnt);
-                let str_sub_stat_4_value = model_inference(
-                    &info.sub_stat4_value_pos, "sub_stat_4_value", &capture, cnt);
+                let str_sub_stat_1_name =
+                    model_inference(&info.sub_stat1_name_pos, "sub_stat_1_name", &capture, cnt);
+                let str_sub_stat_1_value =
+                    model_inference(&info.sub_stat1_value_pos, "sub_stat_1_value", &capture, cnt);
+                let str_sub_stat_2_name =
+                    model_inference(&info.sub_stat2_name_pos, "sub_stat_2_name", &capture, cnt);
+                let str_sub_stat_2_value =
+                    model_inference(&info.sub_stat2_value_pos, "sub_stat_2_value", &capture, cnt);
+                let str_sub_stat_3_name =
+                    model_inference(&info.sub_stat3_name_pos, "sub_stat_3_name", &capture, cnt);
+                let str_sub_stat_3_value =
+                    model_inference(&info.sub_stat3_value_pos, "sub_stat_3_value", &capture, cnt);
+                let str_sub_stat_4_name =
+                    model_inference(&info.sub_stat4_name_pos, "sub_stat_4_name", &capture, cnt);
+                let str_sub_stat_4_value =
+                    model_inference(&info.sub_stat4_value_pos, "sub_stat_4_value", &capture, cnt);
 
                 let str_level = model_inference(&info.level_position, "level", &capture, cnt);
                 // let str_equip = model_inference(&info.equip_position, "equip", &capture, cnt);
@@ -745,7 +772,7 @@ impl YasScanner {
                     info!("{:?}", result);
                 }
                 // println!("{:?}", result);
-                let relic = result.to_internal_relic();
+                let relic = result.to_internal_relic(lock_map.clone());
                 if let Some(a) = relic {
                     if hash.contains(&a) {
                         dup_count += 1;
@@ -754,6 +781,15 @@ impl YasScanner {
                     } else {
                         consecutive_dup_count = 0;
                         hash.insert(a.clone());
+                        let mut need_lock = 0_u32;
+                        if a.locked {
+                            need_lock |= 1
+                        }
+                        lock_op = if curr_locked == 1 {
+                            curr_locked - need_lock
+                        } else {
+                            need_lock - curr_locked
+                        };
                         results.push(a);
                     }
                 } else {
@@ -761,6 +797,7 @@ impl YasScanner {
                     error_count += 1;
                     // println!("error parsing results");
                 }
+                tx2.send(lock_op).unwrap();
                 if consecutive_dup_count >= info.art_row {
                     error!("检测到连续多个重复遗器，可能为翻页错误，或者为非背包顶部开始扫描");
                     break;
@@ -820,7 +857,19 @@ impl YasScanner {
                     if star < self.config.min_star {
                         break 'outer;
                     }
-                    tx.send(Some((capture, star))).unwrap();
+                    let lock_stat = self.get_lock();
+                    tx.send(Some((capture, star, lock_stat))).unwrap();
+                    let lock_op = rx2.recv().unwrap();
+                    // info!("锁了吗，{}, op: {}", lock_stat, lock_op);
+
+                    if !self.lock_map.is_empty() && lock_op == 1 {
+                        let x = self.info.left + self.info.lock_x as i32;
+                        let y = self.info.top + self.info.lock_y as i32;
+                        self.enigo.mouse_move_to(x as i32, y as i32);
+                        self.enigo.mouse_click(MouseButton::Left);
+                        utils::sleep(400);
+                        self.move_to(row, col);
+                    }
 
                     scanned_count += 1;
                 } // end 'col
