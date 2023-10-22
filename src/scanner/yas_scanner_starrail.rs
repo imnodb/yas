@@ -436,7 +436,7 @@ impl YasScanner {
                 return equip_image.name.clone();
             }
         }
-        im.save(format!("captures/equip_image.png"))
+        im.save(format!("march7th_equip_image.png"))
             .expect("save equip_image Err");
         return String::new();
     }
