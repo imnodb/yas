@@ -12,9 +12,11 @@ use image::{GenericImageView, RgbImage};
 use log::{error, info, warn};
 use tract_onnx::prelude::tract_itertools::Itertools;
 
-use crate::artifact::internal_relic::{InternalRelic, Lock, RelicSetName, RelicSlot, RelicStat};
+use crate::artifact::internal_relic::{
+    EquipImage, InternalRelic, Lock, RelicSetName, RelicSlot, RelicStat,
+};
 use crate::capture::{self};
-use crate::common::character_name::CHARACTER_NAMES;
+use crate::common::character_name::CHARACTER_IMAGES;
 use crate::common::color::Color;
 #[cfg(target_os = "macos")]
 use crate::common::utils::get_pid_and_ui;
@@ -160,7 +162,7 @@ impl YasScanResult {
         let sub3 = RelicStat::from_zh_cn_raw(&self.sub_stat_3);
         let sub4 = RelicStat::from_zh_cn_raw(&self.sub_stat_4);
 
-        let equip = None;
+        let equip = Some(self.equip.clone());
         /*         let equip = if self.equip.contains("已装备") {
             //let equip_name = self.equip.clone();
             //equip_name.remove_matches("已装备");
@@ -406,6 +408,39 @@ impl YasScanner {
         }
     }
 
+    fn get_equip(&self) -> String {
+        let equip_images: Vec<EquipImage> = CHARACTER_IMAGES.to_vec();
+
+        let im = capture::capture_absolute(&PixelRect {
+            left: self.info.left as i32 + self.info.equip_position.left,
+            top: self.info.top as i32 + self.info.equip_position.top,
+            width: self.info.equip_position.right - self.info.equip_position.left,
+            height: self.info.equip_position.bottom - self.info.equip_position.top,
+        })
+        .unwrap();
+        let (width, height) = im.dimensions();
+        for equip_image in equip_images {
+            // Calculate the difference between the two images
+            let mut sum_diff = 0.0;
+            for x in 0..width {
+                for y in 0..height {
+                    let pixel1 = im.get_pixel(x, y);
+                    let pixel2 = equip_image.image.get_pixel(x, y);
+                    let diff = capture::pixel_diff(pixel1, pixel2);
+                    sum_diff += diff;
+                }
+            }
+            // Calculate the average difference
+            let avg_diff = sum_diff / (width * height) as f64;
+            if avg_diff < 100.0 {
+                return equip_image.name.clone();
+            }
+        }
+        im.save(format!("captures/equip_image.png"))
+            .expect("save equip_image Err");
+        return String::new();
+    }
+
     pub fn move_to(&mut self, row: u32, col: u32) {
         let info = &self.info;
         let left = info.left
@@ -632,7 +667,7 @@ impl YasScanner {
         info!("total row: {}", total_row);
         info!("last column: {}", last_row_col);
 
-        let (tx, rx) = mpsc::channel::<Option<(RgbImage, u32, u32)>>();
+        let (tx, rx) = mpsc::channel::<Option<(RgbImage, u32, u32, String)>>();
         let (tx2, rx2) = mpsc::sync_channel::<u32>(1);
         let info_2 = self.info.clone();
         // v bvvmnvbm
@@ -665,7 +700,7 @@ impl YasScanner {
             };
 
             for i in rx {
-                let (capture, star, curr_locked) = match i {
+                let (capture, star, curr_locked, equip) = match i {
                     Some(v) => v,
                     None => break,
                 };
@@ -765,7 +800,7 @@ impl YasScanner {
                     sub_stat_3: str_sub_stat_3_name + "+" + &str_sub_stat_3_value,
                     sub_stat_4: str_sub_stat_4_name + "+" + &str_sub_stat_4_value,
                     level: str_level,
-                    equip: String::new(),
+                    equip,
                     star,
                 };
                 if is_verbose {
@@ -858,7 +893,8 @@ impl YasScanner {
                         break 'outer;
                     }
                     let lock_stat = self.get_lock();
-                    tx.send(Some((capture, star, lock_stat))).unwrap();
+                    let equip = self.get_equip();
+                    tx.send(Some((capture, star, lock_stat, equip))).unwrap();
                     let lock_op = rx2.recv().unwrap();
                     // info!("锁了吗，{}, op: {}", lock_stat, lock_op);
 

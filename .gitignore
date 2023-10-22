@@ -1,5 +1,6 @@
 /target
 *.png
+!models/images/*.png
 data/
 target/
 mona.json

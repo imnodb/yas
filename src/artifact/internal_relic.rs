@@ -1,9 +1,10 @@
 use edit_distance;
+use image::{ImageBuffer, Rgb};
 use log::{error, warn};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::collections::hash_map::DefaultHasher;
+use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 use strum_macros::Display;
 
@@ -96,6 +97,12 @@ pub struct InternalRelic {
 pub struct Lock {
     pub save: bool,
     pub token: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct EquipImage {
+    pub name: String,
+    pub image: ImageBuffer<Rgb<u8>, Vec<u8>>,
 }
 
 impl InternalRelic {

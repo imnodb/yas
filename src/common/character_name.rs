@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use crate::artifact::internal_relic::EquipImage;
 use lazy_static::lazy_static;
 
 lazy_static! {
@@ -78,5 +79,120 @@ lazy_static! {
         "那维莱特",
         "娜维娅",
     ]);
-
+    pub static ref CHARACTER_IMAGES: Vec<EquipImage> = Vec::from([
+        EquipImage {
+            name: "开拓者".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/开拓者.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "白露".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/白露.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "符玄".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/符玄.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "青雀".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/青雀.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "素裳".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/素裳.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "停云".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/停云.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "驭空".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/驭空.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "玲可".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/玲可.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "克拉拉".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/克拉拉.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "佩拉".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/佩拉.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "杰帕德".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/杰帕德.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "希露瓦".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/希露瓦.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "希儿".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/希儿.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "布洛妮娅".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/布洛妮娅.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "艾丝妲".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/艾丝妲.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "银狼".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/银狼.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "卡芙卡".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/卡芙卡.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "丹恒".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/丹恒.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "三月七".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/三月七.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+    ]);
 }

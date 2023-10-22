@@ -85,3 +85,10 @@ pub fn get_color(x: u32, y: u32) -> Color {
     let pixel = im.get_pixel(0, 0);
     Color::from(pixel[0], pixel[1], pixel[2])
 }
+
+pub fn pixel_diff(pixel1: &image::Rgb<u8>, pixel2: &image::Rgb<u8>) -> f64 {
+    let r_diff = pixel1[0] as f64 - pixel2[0] as f64;
+    let g_diff = pixel1[1] as f64 - pixel2[1] as f64;
+    let b_diff = pixel1[2] as f64 - pixel2[2] as f64;
+    (r_diff * r_diff + g_diff * g_diff + b_diff * b_diff) / 3.0
+}
