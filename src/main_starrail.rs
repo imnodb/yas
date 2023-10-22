@@ -158,7 +158,7 @@ fn main() {
         }
     }
     if lock_map.is_empty() {
-        warn!("根据分数加锁！\n");
+        warn!("没有检测到lock文件，不加锁！\n");
     } else {
         warn!("检测到lock文件，开始加解锁：");
     }
