@@ -1,5 +1,5 @@
 use edit_distance;
-use image::{ImageBuffer, Rgb};
+use image::RgbImage;
 use log::{error, warn};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -102,7 +102,7 @@ pub struct Lock {
 #[derive(Debug, Clone)]
 pub struct EquipImage {
     pub name: String,
-    pub image: ImageBuffer<Rgb<u8>, Vec<u8>>,
+    pub image: RgbImage,
 }
 
 impl InternalRelic {

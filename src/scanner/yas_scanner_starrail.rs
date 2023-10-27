@@ -418,21 +418,12 @@ impl YasScanner {
             height: self.info.equip_position.bottom - self.info.equip_position.top,
         })
         .unwrap();
-        let (width, height) = im.dimensions();
+
         for equip_image in equip_images {
             // Calculate the difference between the two images
-            let mut sum_diff = 0.0;
-            for x in 0..width {
-                for y in 0..height {
-                    let pixel1 = im.get_pixel(x, y);
-                    let pixel2 = equip_image.image.get_pixel(x, y);
-                    let diff = capture::pixel_diff(pixel1, pixel2);
-                    sum_diff += diff;
-                }
-            }
+            let result = image_compare::rgb_hybrid_compare(&im, &equip_image.image).expect("Images had different dimensions");
             // Calculate the average difference
-            let avg_diff = sum_diff / (width * height) as f64;
-            if avg_diff < 100.0 {
+            if result.score > 0.5 {
                 return equip_image.name.clone();
             }
         }
