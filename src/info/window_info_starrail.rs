@@ -232,8 +232,8 @@ pub const WINDOW_16_9: WindowInfoStarRail = WindowInfoStarRail {
     left_margin: 113.0,
     top_margin: 172.0,
 
-    flag_x: 271.1,
-    flag_y: 158.0,
+    flag_x: 242.0,
+    flag_y: 284.0,
 
     star_x: 1500.0,
     star_y: 208.0,

@@ -68,6 +68,10 @@ impl RelicSetName {
             RelicSetName::BrokenKeel => "BrokenKeel",
             RelicSetName::LongevousDisciple => "LongevousDisciple",
             RelicSetName::MessengerTraversingHackerspace => "MessengerTraversingHackerspace",
+            RelicSetName::TheAshblazingGrandDuke => "TheAshblazingGrandDuke",
+            RelicSetName::PrisonerinDeepConfinement => "PrisonerinDeepConfinement",
+            RelicSetName::PenaconyLandoftheDreams => "PenaconyLandoftheDreams",
+            RelicSetName::FirmamentFronlineGlamoth => "FirmamentFronlineGlamoth",
             _ => same.as_str(),
         };
         String::from(temp)
@@ -175,7 +179,7 @@ impl<'a> Serialize for March7thFormat<'a> {
 
 impl<'a> March7thFormat<'a> {
     pub fn new(results: &Vec<InternalRelic>) -> March7thFormat {
-        let mut head: Vec<&March7thRelic> = Vec::new();
+        let _head: Vec<&March7thRelic> = Vec::new();
         let mut hands: Vec<&March7thRelic> = Vec::new();
         let mut body: Vec<&March7thRelic> = Vec::new();
         let mut feet: Vec<&March7thRelic> = Vec::new();

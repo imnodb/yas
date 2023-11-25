@@ -154,7 +154,7 @@ fn main() {
                     lock_map.insert(a.token.clone(), a);
                 }
             },
-            Err(e) => (),
+            Err(_e) => (),
         }
     }
     if lock_map.is_empty() {

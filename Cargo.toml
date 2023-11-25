@@ -31,6 +31,7 @@ semver = "1.0.7"
 lazy_static = "1.4.0"
 screenshots = "0.5.3"
 png = "0.17.8"
+futures = "0.3.29"
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3", features = [
@@ -39,6 +40,13 @@ winapi = { version = "0.3", features = [
     "winnt",
     "securitybaseapi",
     "libloaderapi",
+] }
+windows = { version = "0.52.0", features = [
+    "Media_Ocr", 
+    "Graphics_Imaging", 
+    "Storage_Streams", 
+    "Foundation",
+    "Foundation_Collections",
 ] }
 
 [target.'cfg(macos)'.dependencies]

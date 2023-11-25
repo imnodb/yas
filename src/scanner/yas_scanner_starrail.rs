@@ -71,7 +71,7 @@ impl YasScannerConfig {
                 .unwrap(),
             scroll_stop: matches
                 .value_of("scroll-stop")
-                .unwrap_or("80")
+                .unwrap_or("200")
                 .parse::<u32>()
                 .unwrap(),
             number: matches
@@ -207,6 +207,44 @@ fn calc_pool(row: &Vec<u8>) -> f32 {
     }
     // pool /= len as f64;
     pool
+}
+
+#[cfg(windows)]
+async fn main_async(img: &RgbImage) -> Option<String> {
+    use windows::{
+        core::*,
+        Graphics::Imaging::BitmapDecoder,
+        Media::Ocr::OcrEngine,
+        Storage::{FileAccessMode, StorageFile},
+    };
+    let temp_img_path = "temp_title.png";
+    img.save(temp_img_path);
+    let mut message = std::env::current_dir().unwrap();
+    message.push(temp_img_path);
+
+    let file = StorageFile::GetFileFromPathAsync(&HSTRING::from(message.to_str().unwrap()))
+        .unwrap()
+        .await
+        .unwrap();
+    let stream = file.OpenAsync(FileAccessMode::Read).unwrap().await.unwrap();
+
+    let decode = BitmapDecoder::CreateAsync(&stream).unwrap().await.unwrap();
+    let bitmap = decode.GetSoftwareBitmapAsync().unwrap().await.unwrap();
+    let engine = OcrEngine::TryCreateFromUserProfileLanguages().unwrap();
+    let result = engine.RecognizeAsync(&bitmap).unwrap().await.unwrap();
+    let mut ocr_string = result
+        .Lines()
+        .unwrap()
+        .GetAt(0)
+        .unwrap()
+        .Text()
+        .unwrap()
+        .to_string_lossy();
+    ocr_string = ocr_string.replace(" ", "");
+    ocr_string = ocr_string.replace("r黑塔」", "「黑塔」");
+    ocr_string = ocr_string.replace("逢春木篙", "逢春木簪");
+
+    Some(ocr_string)
 }
 
 impl YasScanner {
@@ -421,7 +459,8 @@ impl YasScanner {
 
         for equip_image in equip_images {
             // Calculate the difference between the two images
-            let result = image_compare::rgb_hybrid_compare(&im, &equip_image.image).expect("Images had different dimensions");
+            let result = image_compare::rgb_hybrid_compare(&im, &equip_image.image)
+                .expect("Images had different dimensions");
             // Calculate the average difference
             if result.score > 0.5 {
                 return equip_image.name.clone();
@@ -461,7 +500,7 @@ impl YasScanner {
             }
 
             #[cfg(windows)]
-            self.enigo.mouse_scroll_y(-5);
+            self.enigo.mouse_scroll_y(-1);
             #[cfg(any(target_os = "linux"))]
             self.enigo.mouse_scroll_y(1);
             #[cfg(target_os = "macos")]
@@ -680,6 +719,7 @@ impl YasScanner {
 
             let mut cnt = 0;
             if is_dump_mode {
+                fs::remove_dir_all("dumps").unwrap_or_else(|e| println!("删除目录失败：{}", e));
                 fs::create_dir("dumps").unwrap();
             }
 
@@ -732,6 +772,17 @@ impl YasScanner {
                             .to_common_grayscale()
                             .save(format!("dumps/p_{}_{}.png", name, cnt))
                             .expect("Err");
+                    }
+
+                    #[cfg(windows)]
+                    if name == "title" {
+                        let ocr_string = futures::executor::block_on(main_async(captured_img)).unwrap();
+                        let set_name = RelicSetName::from_zh_cn(&ocr_string);
+                        if set_name.is_none() {
+                            warn!("ocr detection: {:?}", ocr_string);
+                        } else {
+                            return ocr_string;
+                        }
                     }
 
                     let inference_result = model.inference_string(&processed_img);

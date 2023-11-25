@@ -71,7 +71,7 @@ impl YasScannerConfig {
                 .unwrap(),
             scroll_stop: matches
                 .value_of("scroll-stop")
-                .unwrap_or("80")
+                .unwrap_or("200")
                 .parse::<u32>()
                 .unwrap(),
             number: matches

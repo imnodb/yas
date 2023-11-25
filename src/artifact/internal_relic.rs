@@ -69,6 +69,10 @@ pub enum RelicSetName {
     BrokenKeel,
     LongevousDisciple,
     MessengerTraversingHackerspace,
+    TheAshblazingGrandDuke,
+    PrisonerinDeepConfinement,
+    PenaconyLandoftheDreams,
+    FirmamentFronlineGlamoth,
 }
 
 #[derive(Debug, Clone)]
@@ -307,6 +311,18 @@ pub fn get_real_relic_name_chs(raw: &str) -> Option<String> {
         "信使的百变义手",
         "信使的密信挎包",
         "信使的酷跑板鞋",
+        "匹诺康尼的堂皇酒店",
+        "匹诺康尼的逐梦轨道",
+        "大公的冥焰冠冕",
+        "大公的绅雅礼靴",
+        "大公的绒火指套",
+        "大公的蒙恩长袍",
+        "格拉默的寂静坟碑",
+        "格拉默的铁骑兵团",
+        "系囚的合啮拘笼",
+        "系囚的幽闭缚束",
+        "系囚的绝足锁桎",
+        "系囚的铅石梏铐",
     ];
 
     let mut min_index = 0;
@@ -410,6 +426,18 @@ impl RelicSetName {
             "信使的全息目镜" | "信使的百变义手" | "信使的密信挎包" | "信使的酷跑板鞋" => {
                 Some(RelicSetName::MessengerTraversingHackerspace)
             },
+            "大公的冥焰冠冕" | "大公的绅雅礼靴" | "大公的绒火指套" | "大公的蒙恩长袍" => {
+                Some(RelicSetName::TheAshblazingGrandDuke)
+            },
+            "系囚的合啮拘笼" | "系囚的幽闭缚束" | "系囚的绝足锁桎" | "系囚的铅石梏铐" => {
+                Some(RelicSetName::PrisonerinDeepConfinement)
+            },
+            "匹诺康尼的堂皇酒店" | "匹诺康尼的逐梦轨道" => {
+                Some(RelicSetName::PenaconyLandoftheDreams)
+            },
+            "格拉默的寂静坟碑" | "格拉默的铁骑兵团" => {
+                Some(RelicSetName::FirmamentFronlineGlamoth)
+            },
             _ => None,
         }
     }
@@ -435,6 +463,8 @@ impl RelicSlot {
             | "怪盗的千人假面"
             | "废土客的呼吸面罩"
             | "莳者的复明义眼"
+            | "大公的冥焰冠冕"
+            | "系囚的合啮拘笼"
             | "信使的全息目镜" => Some(RelicSlot::Head),
             "过客的游龙臂鞲"
             | "快枪手的粗革手套"
@@ -449,6 +479,8 @@ impl RelicSlot {
             | "怪盗的绘纹手套"
             | "废土客的荒漠终端"
             | "莳者的机巧木手"
+            | "系囚的铅石梏铐"
+            | "大公的绒火指套"
             | "信使的百变义手" => Some(RelicSlot::Hands),
             "过客的残绣风衣"
             | "快枪手的猎风披肩"
@@ -463,6 +495,8 @@ impl RelicSlot {
             | "怪盗的纤钢爪钩"
             | "废土客的修士长袍"
             | "莳者的承露羽衣"
+            | "大公的蒙恩长袍"
+            | "系囚的幽闭缚束"
             | "信使的密信挎包" => Some(RelicSlot::Body),
             "过客的冥途游履"
             | "快枪手的铆钉马靴"
@@ -477,6 +511,8 @@ impl RelicSlot {
             | "怪盗的流星快靴"
             | "废土客的动力腿甲"
             | "莳者的天人丝履"
+            | "系囚的绝足锁桎"
+            | "大公的绅雅礼靴"
             | "信使的酷跑板鞋" => Some(RelicSlot::Feet),
             "「黑塔」的空间站点"
             | "罗浮仙舟的天外楼船"
@@ -487,6 +523,8 @@ impl RelicSlot {
             | "塔利亚的钉壳小镇"
             | "翁瓦克的诞生之岛"
             | "泰科铵的镭射球场"
+            | "格拉默的铁骑兵团"
+            | "匹诺康尼的堂皇酒店"
             | "伊须磨洲的残船鲸落" => Some(RelicSlot::PlanarSphere),
             "「黑塔」的漫历轨迹"
             | "罗浮仙舟的建木枝蔓"
@@ -497,6 +535,8 @@ impl RelicSlot {
             | "塔利亚的裸皮电线"
             | "翁瓦克的环岛海岸"
             | "泰科铵的弧光赛道"
+            | "匹诺康尼的逐梦轨道"
+            | "格拉默的寂静坟碑"
             | "伊须磨洲的坼裂缆索" => Some(RelicSlot::LinkRope),
             _ => None,
         }

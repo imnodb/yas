@@ -1,4 +1,4 @@
-use crate::common::{PixelRect, PixelRectBound};
+use crate::common::{PixelRectBound};
 use crate::info::window_info_starrail::{
     WINDOW_43_18, WINDOW_16_9, WINDOW_8_5, WINDOW_4_3, WINDOW_7_3, WINDOW_MAC_8_5
 };
