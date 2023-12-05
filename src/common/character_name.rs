@@ -194,5 +194,11 @@ lazy_static! {
                 .unwrap()
                 .into_rgb8(),
         },
+        EquipImage {
+            name: "藿藿".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/藿藿.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
     ]);
 }
