@@ -206,5 +206,17 @@ lazy_static! {
                 .unwrap()
                 .into_rgb8(),
         },
+        EquipImage {
+            name: "黑天鹅".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/黑天鹅.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "真理".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/真理.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
     ]);
 }

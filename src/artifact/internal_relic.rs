@@ -73,6 +73,8 @@ pub enum RelicSetName {
     PrisonerinDeepConfinement,
     PenaconyLandoftheDreams,
     FirmamentFronlineGlamoth,
+    ZhongBiao,
+    XianQu,
 }
 
 #[derive(Debug, Clone)]
@@ -323,6 +325,14 @@ pub fn get_real_relic_name_chs(raw: &str) -> Option<String> {
         "系囚的幽闭缚束",
         "系囚的绝足锁桎",
         "系囚的铅石梏铐",
+        "钟表匠的极目透镜",
+        "钟表匠的交运腕表",
+        "钟表匠的空幻礼服",
+        "钟表匠的隐梦革履",
+        "先驱的绝热围壳",
+        "先驱的虚极罗盘",
+        "先驱的密合铅衣",
+        "先驱的泊星桩锚",
     ];
 
     let mut min_index = 0;
@@ -438,6 +448,12 @@ impl RelicSetName {
             "格拉默的寂静坟碑" | "格拉默的铁骑兵团" => {
                 Some(RelicSetName::FirmamentFronlineGlamoth)
             },
+            "钟表匠的极目透镜" | "钟表匠的交运腕表" | "钟表匠的空幻礼服" | "钟表匠的隐梦革履" => {
+                Some(RelicSetName::ZhongBiao)
+            },
+            "先驱的绝热围壳" | "先驱的虚极罗盘" | "先驱的密合铅衣" | "先驱的泊星桩锚" => {
+                Some(RelicSetName::XianQu)
+            },
             _ => None,
         }
     }
@@ -465,7 +481,9 @@ impl RelicSlot {
             | "莳者的复明义眼"
             | "大公的冥焰冠冕"
             | "系囚的合啮拘笼"
-            | "信使的全息目镜" => Some(RelicSlot::Head),
+            | "信使的全息目镜"
+            | "钟表匠的极目透镜"
+            | "先驱的绝热围壳" => Some(RelicSlot::Head),
             "过客的游龙臂鞲"
             | "快枪手的粗革手套"
             | "圣骑的沉默誓环"
@@ -481,7 +499,9 @@ impl RelicSlot {
             | "莳者的机巧木手"
             | "系囚的铅石梏铐"
             | "大公的绒火指套"
-            | "信使的百变义手" => Some(RelicSlot::Hands),
+            | "信使的百变义手"
+            | "钟表匠的交运腕表"
+            | "先驱的虚极罗盘" => Some(RelicSlot::Hands),
             "过客的残绣风衣"
             | "快枪手的猎风披肩"
             | "圣骑的肃穆胸甲"
@@ -497,7 +517,9 @@ impl RelicSlot {
             | "莳者的承露羽衣"
             | "大公的蒙恩长袍"
             | "系囚的幽闭缚束"
-            | "信使的密信挎包" => Some(RelicSlot::Body),
+            | "信使的密信挎包"
+            | "钟表匠的空幻礼服"
+            | "先驱的密合铅衣" => Some(RelicSlot::Body),
             "过客的冥途游履"
             | "快枪手的铆钉马靴"
             | "圣骑的秩序铁靴"
@@ -513,7 +535,9 @@ impl RelicSlot {
             | "莳者的天人丝履"
             | "系囚的绝足锁桎"
             | "大公的绅雅礼靴"
-            | "信使的酷跑板鞋" => Some(RelicSlot::Feet),
+            | "信使的酷跑板鞋"
+            | "钟表匠的隐梦革履"
+            | "先驱的泊星桩锚" => Some(RelicSlot::Feet),
             "「黑塔」的空间站点"
             | "罗浮仙舟的天外楼船"
             | "公司的巨构总部"

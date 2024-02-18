@@ -72,6 +72,8 @@ impl RelicSetName {
             RelicSetName::PrisonerinDeepConfinement => "PrisonerinDeepConfinement",
             RelicSetName::PenaconyLandoftheDreams => "PenaconyLandoftheDreams",
             RelicSetName::FirmamentFronlineGlamoth => "FirmamentFronlineGlamoth",
+            RelicSetName::ZhongBiao => "机心戏梦的钟表匠",
+            RelicSetName::XianQu => "死水深潜的先驱",
             _ => same.as_str(),
         };
         String::from(temp)

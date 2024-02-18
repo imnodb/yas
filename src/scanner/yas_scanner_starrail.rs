@@ -243,6 +243,7 @@ async fn main_async(img: &RgbImage) -> Option<String> {
     ocr_string = ocr_string.replace(" ", "");
     ocr_string = ocr_string.replace("r黑塔」", "「黑塔」");
     ocr_string = ocr_string.replace("逢春木篙", "逢春木簪");
+    ocr_string = ocr_string.replace("钟表匠的喼梦革履", "钟表匠的隐梦革履");
 
     Some(ocr_string)
 }
@@ -674,6 +675,19 @@ impl YasScanner {
            return Vec::new();
         } */
 
+        let raw_im_rect: PixelRect = PixelRect {
+            left: self.info.left as i32,
+            top: self.info.top as i32,
+            width: self.info.width as i32,
+            height: self.info.height as i32,
+        };
+        // dbg!(&self.info);
+        let mut raw_im = capture::capture_absolute(&raw_im_rect).unwrap();
+        raw_im = image::imageops::resize(&raw_im, 1600, 900,image::imageops::FilterType::Triangle);
+        let _ = raw_im.save("raw_im.png");
+        println!("Finish capture raw");
+
+
         let count = match self.get_relic_count() {
             Ok(v) => v,
             Err(_) => 1500,
@@ -930,6 +944,7 @@ impl YasScanner {
 
                     self.wait_until_switched();
                     let capture = self.capture_panel().unwrap();
+                    capture.save("capture.png");
                     let star = self.get_star();
                     if star < self.config.min_star {
                         break 'outer;
