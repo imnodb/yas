@@ -218,5 +218,11 @@ lazy_static! {
                 .unwrap()
                 .into_rgb8(),
         },
+        EquipImage {
+            name: "花火".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/花火.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
     ]);
 }
