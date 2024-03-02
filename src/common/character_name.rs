@@ -219,6 +219,12 @@ lazy_static! {
                 .into_rgb8(),
         },
         EquipImage {
+            name: "黑塔".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/黑塔.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
             name: "花火".to_string(),
             image: image::load_from_memory(include_bytes!("../../models/images/花火.png"))
                 .unwrap()
