@@ -219,7 +219,7 @@ pub const WINDOW_16_9: WindowInfoStarRail = WindowInfoStarRail {
     sub_stat4_value_pos: Rect(467.0, 1534.0, 487.0, 1369.0),
 
     equip_pos: Rect(725.0, 1338.0, 757.0, 1308.0),
-    art_count_pos: Rect(813.0, 960.0, 836.0, 753.0),
+    art_count_pos: Rect(42.0, 1480.0, 66.0, 1260.0),
 
     art_width: 197.5 - 112.5,
     art_height: 379.2 - 295.8,

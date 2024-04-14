@@ -75,6 +75,8 @@ pub enum RelicSetName {
     FirmamentFronlineGlamoth,
     ZhongBiao,
     XianQu,
+    ChuYun,
+    WuZhu,
 }
 
 #[derive(Debug, Clone)]
@@ -333,6 +335,10 @@ pub fn get_real_relic_name_chs(raw: &str) -> Option<String> {
         "先驱的虚极罗盘",
         "先驱的密合铅衣",
         "先驱的泊星桩锚",
+        "出云的祸津众神",
+        "出云的终始一刀",
+        "茨冈尼亚的母神卧榻",
+        "茨冈尼亚的轮回纽结",
     ];
 
     let mut min_index = 0;
@@ -454,6 +460,12 @@ impl RelicSetName {
             "先驱的绝热围壳" | "先驱的虚极罗盘" | "先驱的密合铅衣" | "先驱的泊星桩锚" => {
                 Some(RelicSetName::XianQu)
             },
+            "出云的祸津众神" | "出云的终始一刀" => {
+                Some(RelicSetName::ChuYun)
+            },
+            "茨冈尼亚的母神卧榻" | "茨冈尼亚的轮回纽结" => {
+                Some(RelicSetName::WuZhu)
+            },
             _ => None,
         }
     }
@@ -549,6 +561,8 @@ impl RelicSlot {
             | "泰科铵的镭射球场"
             | "格拉默的铁骑兵团"
             | "匹诺康尼的堂皇酒店"
+            | "出云的祸津众神"
+            | "茨冈尼亚的母神卧榻"
             | "伊须磨洲的残船鲸落" => Some(RelicSlot::PlanarSphere),
             "「黑塔」的漫历轨迹"
             | "罗浮仙舟的建木枝蔓"
@@ -561,6 +575,8 @@ impl RelicSlot {
             | "泰科铵的弧光赛道"
             | "匹诺康尼的逐梦轨道"
             | "格拉默的寂静坟碑"
+            | "出云的终始一刀"
+            | "茨冈尼亚的轮回纽结"
             | "伊须磨洲的坼裂缆索" => Some(RelicSlot::LinkRope),
             _ => None,
         }

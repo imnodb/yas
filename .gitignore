@@ -3,7 +3,8 @@
 !models/images/*.png
 data/
 target/
-mona.json
+lock.json
+march7th.json
 .idea/
 captures/
 .vscode/

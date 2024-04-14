@@ -74,6 +74,8 @@ impl RelicSetName {
             RelicSetName::FirmamentFronlineGlamoth => "FirmamentFronlineGlamoth",
             RelicSetName::ZhongBiao => "机心戏梦的钟表匠",
             RelicSetName::XianQu => "死水深潜的先驱",
+            RelicSetName::ChuYun => "出云显世与高天神国",
+            RelicSetName::WuZhu => "无主的荒星茨冈尼亚",
             _ => same.as_str(),
         };
         String::from(temp)

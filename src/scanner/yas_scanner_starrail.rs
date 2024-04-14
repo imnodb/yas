@@ -2,6 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::convert::From;
 use std::fs;
 
+use std::io::stdin;
 use std::sync::mpsc;
 use std::thread;
 use std::time::SystemTime;
@@ -379,6 +380,7 @@ impl YasScanner {
             if s.starts_with("遗器数量") {
                 let chars = s.chars().collect::<Vec<char>>();
                 let count_str = (&chars[4..chars.len() - 5]).iter().collect::<String>();
+                info!("count string: {}", count_str);
                 let count = match count_str.parse::<u32>() {
                     Ok(v) => v,
                     Err(_) => {
@@ -690,7 +692,16 @@ impl YasScanner {
 
         let count = match self.get_relic_count() {
             Ok(v) => v,
-            Err(_) => 1500,
+            Err(_) => {
+                println!("未检测到圣遗物数量，输入正确的圣遗物数量：");
+                let mut s: String = String::new();
+                stdin().read_line(&mut s);
+                let mut c = 2000;
+                if s.trim() != "" {
+                    c = s.trim().parse::<u32>().unwrap();
+                }
+                c
+            },
         };
 
         let total_row = (count + self.col - 1) / self.col;
@@ -699,13 +710,6 @@ impl YasScanner {
         } else {
             count % self.col
         };
-
-        // println!("检测到圣遗物数量：{}，若无误请按回车，否则输入正确的圣遗物数量：", count);
-        // let mut s: String = String::new();
-        // stdin().read_line(&mut s);
-        // if s.trim() != "" {
-        //     count = s.trim().parse::<u32>().unwrap();
-        // }
 
         info!("detected count: {}", count);
         info!("total row: {}", total_row);
