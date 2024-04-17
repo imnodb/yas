@@ -230,5 +230,11 @@ lazy_static! {
                 .unwrap()
                 .into_rgb8(),
         },
+        EquipImage {
+            name: "黄泉".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/黄泉.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
     ]);
 }
