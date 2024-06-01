@@ -236,5 +236,23 @@ lazy_static! {
                 .unwrap()
                 .into_rgb8(),
         },
+        EquipImage {
+            name: "砂金".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/砂金.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "知更鸟".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/知更鸟.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "托帕&账账".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/托帕&账账.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
     ]);
 }

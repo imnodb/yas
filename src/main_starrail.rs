@@ -321,7 +321,8 @@ fn main() {
     // let mut inference = CRNNModel::new(String::from("model_training.onnx"), String::from("index_2_word.json"));
     // let s = inference.inference_string(&img);
     // println!("{}", s);
-    info!("识别结束，请按Enter退出");
-    let mut s = String::new();
-    stdin().read_line(&mut s).unwrap();
+    info!("识别结束。");
+    // info!("识别结束，请按Enter退出");
+    // let mut s = String::new();
+    // stdin().read_line(&mut s).unwrap();
 }

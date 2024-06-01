@@ -245,6 +245,7 @@ async fn main_async(img: &RgbImage) -> Option<String> {
     ocr_string = ocr_string.replace("r黑塔」", "「黑塔」");
     ocr_string = ocr_string.replace("逢春木篙", "逢春木簪");
     ocr_string = ocr_string.replace("钟表匠的喼梦革履", "钟表匠的隐梦革履");
+    ocr_string = ocr_string.replace("火匠的黑曜目镜", "火匠的黑耀目镜");
 
     Some(ocr_string)
 }
