@@ -254,5 +254,11 @@ lazy_static! {
                 .unwrap()
                 .into_rgb8(),
         },
+        EquipImage {
+            name: "加拉赫".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/加拉赫.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
     ]);
 }
