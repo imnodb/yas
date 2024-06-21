@@ -76,6 +76,10 @@ impl RelicSetName {
             RelicSetName::XianQu => "死水深潜的先驱",
             RelicSetName::ChuYun => "出云显世与高天神国",
             RelicSetName::WuZhu => "无主的荒星茨冈尼亚",
+            RelicSetName::ZhuLian => "劫火莲灯铸炼宫",
+            RelicSetName::DuLan => "奔狼的都蓝王朝",
+            RelicSetName::TieQi => "荡除蠹灾的铁骑",
+            RelicSetName::YongLie => "风举云飞的勇烈",
             _ => same.as_str(),
         };
         String::from(temp)
