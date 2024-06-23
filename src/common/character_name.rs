@@ -82,13 +82,13 @@ lazy_static! {
     pub static ref CHARACTER_IMAGES: Vec<EquipImage> = Vec::from([
         EquipImage {
             name: "开拓者·同协".to_string(),
-            image: image::load_from_memory(include_bytes!("../../models/images/开拓者·同协.png"))
+            image: image::load_from_memory(include_bytes!("../../models/images/星·同协.png"))
                 .unwrap()
                 .into_rgb8(),
         },
         EquipImage {
             name: "开拓者·火".to_string(),
-            image: image::load_from_memory(include_bytes!("../../models/images/开拓者·火.png"))
+            image: image::load_from_memory(include_bytes!("../../models/images/星·火.png"))
                 .unwrap()
                 .into_rgb8(),
         },
