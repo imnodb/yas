@@ -114,8 +114,6 @@ pub struct YasScanner {
     scanned_count: u32,
 
     is_cloud: bool,
-
-    lock_map: HashMap<String, Lock>,
 }
 
 enum ScrollResult {
@@ -251,12 +249,7 @@ async fn main_async(img: &RgbImage) -> Option<String> {
 }
 
 impl YasScanner {
-    pub fn new(
-        info: ScanInfoStarRail,
-        config: YasScannerConfig,
-        is_cloud: bool,
-        lock_map: HashMap<String, Lock>,
-    ) -> YasScanner {
+    pub fn new(info: ScanInfoStarRail, config: YasScannerConfig, is_cloud: bool) -> YasScanner {
         let row = info.art_row;
         let col = info.art_col;
 
@@ -281,7 +274,6 @@ impl YasScanner {
             scanned_count: 0,
 
             is_cloud,
-            lock_map,
         }
     }
 }
@@ -365,6 +357,18 @@ impl YasScanner {
         let u8_arr = capture::capture_absolute(&rect)?;
         // info!("capture time: {}ms", now.elapsed().unwrap().as_millis());
         Ok(u8_arr)
+    }
+
+    pub fn get_uid(&mut self) -> String {
+        let info = &self.info;
+        let raw_after_pp = self
+            .info
+            .uid_position
+            .capture_relative(info.left, info.top, true)
+            .unwrap();
+        let s = self.model.inference_string(&raw_after_pp);
+        info!("raw uid string: {}", s);
+        return s;
     }
 
     fn get_relic_count(&mut self) -> Result<u32, String> {
@@ -671,7 +675,7 @@ impl YasScanner {
             }
         }
     */
-    pub fn start(&mut self) -> Vec<InternalRelic> {
+    pub fn start(&mut self, lock_map: HashMap<String, Lock>) -> Vec<InternalRelic> {
         //self.panel_down();
         /*         if self.config.capture_only {
            self.start_capture_only();
@@ -686,10 +690,9 @@ impl YasScanner {
         };
         // dbg!(&self.info);
         let mut raw_im = capture::capture_absolute(&raw_im_rect).unwrap();
-        raw_im = image::imageops::resize(&raw_im, 1600, 900,image::imageops::FilterType::Triangle);
+        raw_im = image::imageops::resize(&raw_im, 1600, 900, image::imageops::FilterType::Triangle);
         let _ = raw_im.save("raw_im.png");
         println!("Finish capture raw");
-
 
         let count = match self.get_relic_count() {
             Ok(v) => v,
@@ -723,7 +726,8 @@ impl YasScanner {
         let is_verbose = self.config.verbose;
         let is_dump_mode = self.config.dump_mode;
         let min_level = self.config.min_level;
-        let lock_map = self.lock_map.clone();
+        let lock_is_empty = lock_map.is_empty();
+
         let handle = thread::spawn(move || {
             let mut results: Vec<InternalRelic> = Vec::new();
             let model = CRNNModel::new(
@@ -795,7 +799,8 @@ impl YasScanner {
 
                     #[cfg(windows)]
                     if name == "title" {
-                        let ocr_string = futures::executor::block_on(main_async(captured_img)).unwrap();
+                        let ocr_string =
+                            futures::executor::block_on(main_async(captured_img)).unwrap();
                         let set_name = RelicSetName::from_zh_cn(&ocr_string);
                         if set_name.is_none() {
                             warn!("ocr detection: {:?}", ocr_string);
@@ -959,8 +964,7 @@ impl YasScanner {
                     tx.send(Some((capture, star, lock_stat, equip))).unwrap();
                     let lock_op = rx2.recv().unwrap();
                     // info!("锁了吗，{}, op: {}", lock_stat, lock_op);
-
-                    if !self.lock_map.is_empty() && lock_op == 1 {
+                    if !lock_is_empty && lock_op == 1 {
                         let x = self.info.left + self.info.lock_x as i32;
                         let y = self.info.top + self.info.lock_y as i32;
                         self.enigo.mouse_move_to(x as i32, y as i32);

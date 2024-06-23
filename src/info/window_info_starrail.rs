@@ -22,6 +22,7 @@ pub struct WindowInfoStarRail {
     pub sub_stat4_name_pos: Rect,
     pub sub_stat4_value_pos: Rect,
 
+    pub uid_pos: Rect,
     pub equip_pos: Rect,
     pub art_count_pos: Rect,
 
@@ -82,6 +83,7 @@ impl WindowInfoStarRail {
             sub_stat3_value_pos: convert_rect(&self.sub_stat3_value_pos),
             sub_stat4_name_pos: convert_rect(&self.sub_stat4_name_pos),
             sub_stat4_value_pos: convert_rect(&self.sub_stat4_value_pos),
+            uid_position: convert_rect(&self.uid_pos),
             equip_position: convert_rect(&self.equip_pos),
             art_count_position: convert_rect(&self.art_count_pos),
             art_width: convert_x(self.art_width) as u32,
@@ -127,6 +129,7 @@ pub const WINDOW_43_18: WindowInfoStarRail = WindowInfoStarRail {
     sub_stat4_name_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
     sub_stat4_value_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
 
+    uid_pos: Rect(50.0, 3185.0, 85.0, 2750.0),
     equip_pos: Rect(1220.0, 5630.0, 1260.0, 3140.0),
     art_count_pos: Rect(50.0, 3185.0, 85.0, 2750.0),
 
@@ -173,6 +176,7 @@ pub const WINDOW_7_3: WindowInfoStarRail = WindowInfoStarRail {
     sub_stat4_name_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
     sub_stat4_value_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
 
+    uid_pos: Rect(50.0, 3185.0, 85.0, 2750.0),
     equip_pos: Rect(762.6, 1850.0, 787.8, 1598.0),
     art_count_pos: Rect(27.1, 1945.0, 52.9, 1785.0),
 
@@ -218,6 +222,7 @@ pub const WINDOW_16_9: WindowInfoStarRail = WindowInfoStarRail {
     sub_stat4_name_pos: Rect(467.0, 1369.0, 487.0, 1204.0),
     sub_stat4_value_pos: Rect(467.0, 1534.0, 487.0, 1369.0),
 
+    uid_pos: Rect(868.0, 133.0, 886.0, 57.0),
     equip_pos: Rect(725.0, 1338.0, 757.0, 1308.0),
     art_count_pos: Rect(42.0, 1480.0, 66.0, 1260.0),
 
@@ -262,6 +267,7 @@ pub const WINDOW_8_5: WindowInfoStarRail = WindowInfoStarRail {
     sub_stat3_value_pos: Rect(435.0, 1534.0, 456.0, 1204.0),
     sub_stat4_name_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
     sub_stat4_value_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
+    uid_pos: Rect(50.0, 3185.0, 85.0, 2750.0),
     equip_pos: Rect(776.0, 1247.3, 800.6, 1041.3),
     art_count_pos: Rect(25.0, 1353.1, 46.8, 1182.8),
     art_width: 950.0 - 857.0,
@@ -300,6 +306,7 @@ pub const WINDOW_4_3: WindowInfoStarRail = WindowInfoStarRail {
     sub_stat3_value_pos: Rect(435.0, 1534.0, 456.0, 1204.0),
     sub_stat4_name_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
     sub_stat4_value_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
+    uid_pos: Rect(50.0, 3185.0, 85.0, 2750.0),
     equip_pos: Rect(849.8, 1090.8, 870.1, 924.4),
     art_count_pos: Rect(22.9, 1202.3, 41.4, 1058.6),
     art_width: 844.0 - 762.0,
@@ -338,6 +345,7 @@ pub const WINDOW_MAC_8_5: WindowInfoStarRail = WindowInfoStarRail {
     sub_stat3_value_pos: Rect(435.0, 1534.0, 456.0, 1204.0),
     sub_stat4_name_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
     sub_stat4_value_pos: Rect(467.0, 1534.0, 487.0, 1204.0),
+    uid_pos: Rect(50.0, 3185.0, 85.0, 2750.0),
     equip_pos: Rect(627. - 28., 1090., 659. - 28., 815.),
     art_count_pos: Rect(51. - 28., 1076., 80. - 28., 924.),
     art_width: 250. - 155.,

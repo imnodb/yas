@@ -160,6 +160,7 @@ impl Serialize for March7thRelic {
 
 pub struct March7thFormat<'a> {
     version: String,
+    uid: String,
     head: Vec<&'a March7thRelic>,
     hands: Vec<&'a March7thRelic>,
     body: Vec<&'a March7thRelic>,
@@ -175,6 +176,7 @@ impl<'a> Serialize for March7thFormat<'a> {
     {
         let mut root = serializer.serialize_map(Some(6))?;
         root.serialize_entry("version", &self.version)?;
+        root.serialize_entry("uid", &self.uid)?;
         root.serialize_entry("head", &self.head)?;
         root.serialize_entry("hands", &self.hands)?;
         root.serialize_entry("body", &self.body)?;
@@ -186,7 +188,7 @@ impl<'a> Serialize for March7thFormat<'a> {
 }
 
 impl<'a> March7thFormat<'a> {
-    pub fn new(results: &Vec<InternalRelic>) -> March7thFormat {
+    pub fn new(uid: String, results: &Vec<InternalRelic>) -> March7thFormat {
         let _head: Vec<&March7thRelic> = Vec::new();
         let mut hands: Vec<&March7thRelic> = Vec::new();
         let mut body: Vec<&March7thRelic> = Vec::new();
@@ -215,6 +217,7 @@ impl<'a> March7thFormat<'a> {
             rope,
 
             version: String::from("1"),
+            uid: uid.clone(),
         }
     }
 

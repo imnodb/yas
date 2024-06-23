@@ -24,6 +24,7 @@ pub struct ScanInfoStarRail {
     pub sub_stat4_name_pos: PixelRectBound,
     pub sub_stat4_value_pos: PixelRectBound,
 
+    pub uid_position: PixelRectBound,
     pub equip_position: PixelRectBound,
     pub art_count_position: PixelRectBound,
 

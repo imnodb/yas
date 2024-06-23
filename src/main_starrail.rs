@@ -294,7 +294,7 @@ fn main() {
     info.left += offset_x;
     info.top += offset_y;
 
-    let mut scanner = YasScanner::new(info.clone(), config, is_cloud, lock_map);
+    let mut scanner = YasScanner::new(info.clone(), config, is_cloud);
 
     let now = SystemTime::now();
     #[cfg(target_os = "macos")]
@@ -302,7 +302,8 @@ fn main() {
         info!("初始化完成，请切换到崩坏：星穹铁道窗口，yas将在10s后开始扫描遗器");
         utils::sleep(10000);
     }
-    let results = scanner.start();
+    let uid = scanner.get_uid();
+    let results = scanner.start(lock_map.clone());
     let t = now.elapsed().unwrap().as_secs_f64();
     info!("time: {}s", t);
 
@@ -310,7 +311,7 @@ fn main() {
     match matches.value_of("output-format") {
         Some("march7th") => {
             let output_filename = output_dir.join("march7th.json");
-            let march7th = March7thFormat::new(&results);
+            let march7th = March7thFormat::new(uid, &results);
             march7th.save(String::from(output_filename.to_str().unwrap()));
         },
         _ => unreachable!(),
