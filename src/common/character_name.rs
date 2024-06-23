@@ -266,5 +266,17 @@ lazy_static! {
                 .unwrap()
                 .into_rgb8(),
         },
+        EquipImage {
+            name: "姬子".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/姬子.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
+        EquipImage {
+            name: "瓦尔特".to_string(),
+            image: image::load_from_memory(include_bytes!("../../models/images/瓦尔特.png"))
+                .unwrap()
+                .into_rgb8(),
+        },
     ]);
 }
