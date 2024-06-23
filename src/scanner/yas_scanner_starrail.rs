@@ -466,7 +466,7 @@ impl YasScanner {
             let result = image_compare::rgb_hybrid_compare(&im, &equip_image.image)
                 .expect("Images had different dimensions");
             // Calculate the average difference
-            if result.score > 0.5 {
+            if result.score > 0.7 {
                 return equip_image.name.clone();
             }
         }
