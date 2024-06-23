@@ -1,3 +1,4 @@
+use serde_json::Value;
 use std::collections::HashMap;
 use std::fs;
 use std::io::stdin;
@@ -139,29 +140,6 @@ fn main() {
     let config = YasScannerConfig::from_match(&matches);
 
     let output_dir = Path::new(matches.value_of("output-dir").unwrap());
-    let lock_filename = output_dir.join("lock.json");
-    // dbg!(&lock_filename);
-    let mut lock_map: HashMap<String, Lock> = HashMap::new();
-
-    if lock_filename.exists() {
-        let json_str = fs::read_to_string(lock_filename);
-        match json_str {
-            Ok(v) => {
-                let json: Vec<Lock> = serde_json::from_str(v.as_str()).unwrap();
-                // dbg!(&json);
-                for a in json.into_iter() {
-                    // dbg!(&a);
-                    lock_map.insert(a.token.clone(), a);
-                }
-            },
-            Err(_e) => (),
-        }
-    }
-    if lock_map.is_empty() {
-        warn!("没有检测到lock文件，不加锁！\n");
-    } else {
-        warn!("检测到lock文件，开始加解锁：");
-    }
 
     let rect: PixelRect;
     let is_cloud: bool;
@@ -303,6 +281,35 @@ fn main() {
         utils::sleep(10000);
     }
     let uid = scanner.get_uid();
+    let lock_filename = output_dir.join(uid.clone() + "-lock.json");
+    // dbg!(&lock_filename);
+    let mut lock_map: HashMap<String, Lock> = HashMap::new();
+    if lock_filename.exists() {
+        let json_str = fs::read_to_string(lock_filename);
+        match json_str {
+            Ok(v) => {
+                let json: Value = serde_json::from_str(v.as_str()).unwrap();
+                let lock_uid: String =
+                    serde_json::from_value(json.get("uid").unwrap().clone()).unwrap();
+                if lock_uid == uid {
+                    let all_arts: Vec<Lock> =
+                        serde_json::from_value(json.get("allArts").unwrap().clone()).unwrap();
+                    // dbg!(&json);Vec<Lock>
+                    for a in all_arts.into_iter() {
+                        // dbg!(&a);
+                        lock_map.insert(a.token.clone(), a);
+                    }
+                }
+            },
+            Err(_e) => (),
+        }
+    }
+    if lock_map.is_empty() {
+        warn!("没有检测到lock文件，不加锁！\n");
+    } else {
+        warn!("检测到lock文件，开始加解锁：");
+    }
+
     let results = scanner.start(lock_map.clone());
     let t = now.elapsed().unwrap().as_secs_f64();
     info!("time: {}s", t);
@@ -310,7 +317,7 @@ fn main() {
     let output_dir = Path::new(matches.value_of("output-dir").unwrap());
     match matches.value_of("output-format") {
         Some("march7th") => {
-            let output_filename = output_dir.join("march7th.json");
+            let output_filename = output_dir.join(uid.clone() + "-march7th.json");
             let march7th = March7thFormat::new(uid, &results);
             march7th.save(String::from(output_filename.to_str().unwrap()));
         },

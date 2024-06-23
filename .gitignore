@@ -5,6 +5,8 @@ data/
 target/
 lock.json
 march7th.json
+*-lock.json
+*-march7th.json
 .idea/
 captures/
 .vscode/
